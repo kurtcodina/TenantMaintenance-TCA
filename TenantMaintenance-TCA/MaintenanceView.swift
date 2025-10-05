@@ -26,20 +26,36 @@ struct MaintenanceView: View {
                 .padding(.horizontal)
             
             LazyVStack(spacing: 12) {
-                ForEach(store.reports) { report in
-                    VStack(alignment: .leading) {
-                        Text(report.title.isEmpty ? "Untitled" : report.title)
-                            .font(.headline)
-                        HStack {
-                            Text(dateFormatter.string(from: Date()))
-                                .font(.subheadline)
-                            Spacer()
-                            Text("Pending")
+                ForEachStore(store.scope(state: \.reports, action: \.report)) { reportStore in
+                    NavigationLink {
+                        ReportView(store: reportStore)
+                            .toolbarRole(.editor)
+                    } label: {
+                        WithViewStore(reportStore, observe: { $0 }) { viewStore in
+                            //                ForEach(store.reports) { report in
+                            VStack(alignment: .leading) {
+                                Text(viewStore.state.title)
+                                    .font(.headline)
+                                    .foregroundStyle(Color.primary)
+
+                                HStack {
+                                    Text(dateFormatter.string(from: viewStore.state.createdAt))
+                                        .font(.subheadline)
+                                        .foregroundStyle(Color.secondary)
+                                    Spacer()
+                                    Text(viewStore.state.status.rawValue)
+                                        .font(.subheadline)
+                                        .foregroundStyle(viewStore.state.status.color)
+                                }
+                            }
+                            .padding()
+                            .background(Color(UIColor.secondarySystemGroupedBackground))
+                            .cornerRadius(10)
                         }
                     }
-                    .padding()
                 }
             }
+            .padding()
             .navigationTitle("Maintenance")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -49,7 +65,7 @@ struct MaintenanceView: View {
                         Label("New", systemImage: "plus")
                             .padding(.vertical, 6)
                             .padding(.horizontal, 12)
-                            .background(Capsule().fill(Color(red: 90/255, green: 69/255, blue: 254/255)))
+                            .background(Capsule().fill(Color.accentColor))
                             .foregroundColor(.white)
                             .labelStyle(.titleAndIcon)
                     }
@@ -62,6 +78,8 @@ struct MaintenanceView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Color(UIColor.systemGroupedBackground))
     }
 }
 

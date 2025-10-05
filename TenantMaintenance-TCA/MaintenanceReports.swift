@@ -21,6 +21,7 @@ struct MaintenanceReports {
         case dismissNewReport
         case newReport(PresentationAction<TenantReport.Action>)
         case saveReport
+        case report(IdentifiedActionOf<TenantReport>)
     }
 
     var body: some ReducerOf<MaintenanceReports> {
@@ -29,24 +30,31 @@ struct MaintenanceReports {
             case .addReportButtonTapped:
                 state.newReport = TenantReport.State()
                 return .none
-
+                
             case .dismissNewReport:
                 state.newReport = nil
                 return .none
-
+                
             case .saveReport:
                 if let report = state.newReport {
                     state.reports.append(report)
                     state.newReport = nil
                 }
                 return .none
-
+                
             case .newReport:
+                return .none
+                
+            case .report:
                 return .none
             }
         }
         .ifLet(\.$newReport, action: \.newReport) {
             TenantReport()
         }
+        .forEach(\.reports, action: \.report) {
+            TenantReport()
+        }
+    
     }
 }

@@ -11,19 +11,17 @@ import ComposableArchitecture
 
 struct NewReportView: View {
     @Environment(\.dismiss) private var dismiss
-
+    
     let store: StoreOf<TenantReport>
     let onSave: () -> Void
-
-    private let suggestions = ["No hot water", "Heating", "Leaking", "Broken window", "Electrical"]
+    
+    private let suggestions = ["No Hot Water 💧", "Broken Oven 🔨", "Cracked Window 🪟", "Electrical ⚡️"]
     
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        
-                        // Title field
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Short title")
                                 .font(.headline)
@@ -37,20 +35,12 @@ struct NewReportView: View {
                                 )
                             )
                             .textFieldStyle(.roundedBorder)
-                            HStack {
-                                Text("\(viewStore.state.title.count)")
-                                    .font(.footnote)
-                                    .foregroundColor(viewStore.state.title.isEmpty ? .red : .secondary)
-                                Spacer()
-                            }
                             if viewStore.state.title.isEmpty {
                                 Text("Title cannot be empty")
                                     .font(.footnote)
                                     .foregroundColor(.red)
                             }
                         }
-                        
-                        // Quick suggestion chips
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
                                 ForEach(suggestions, id: \.self) { suggestion in
@@ -68,9 +58,8 @@ struct NewReportView: View {
                             }
                         }
                         
-                        // Details TextEditor
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Details (optional)")
+                            Text("Description (optional)")
                                 .font(.headline)
                             TextEditor(text: viewStore.binding(get: \.description, send: {
                                 .descriptionChanged($0)
@@ -82,54 +71,57 @@ struct NewReportView: View {
                             )
                         }
                         
-                        // Photos picker
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Photos (optional)")
                                 .font(.headline)
-                            PhotosPicker(
-                                selection: viewStore.binding(get: \.selectedItems, send: {
-                                    .photosPickerSelectionChanged($0)
-                                }),
-                                maxSelectionCount: 6,
-                                matching: .images
-                            ) {
-                                Text("Add Photos")
-                                    .padding(.horizontal)
-                                    .padding(.vertical, 8)
-                                    .background(Color.blue)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(8)
-                            }
                             
-                            if !viewStore.state.photos.isEmpty {
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack {
-                                        ForEach(viewStore.state.photos, id: \.self) { img in
-                                            Image(uiImage: img)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 80, height: 80)
-                                                .clipped()
-                                                .cornerRadius(8)
-                                        }
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(viewStore.state.photos, id: \.self) { img in
+                                        Image(uiImage: img)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 80, height: 80)
+                                            .clipped()
+                                            .cornerRadius(8)
+                                    }
+                                    
+                                    PhotosPicker(
+                                        selection: viewStore.binding(get: \.selectedItems, send: {
+                                            .photosPickerSelectionChanged($0)
+                                        }),
+                                        maxSelectionCount: 6,
+                                        matching: .images
+                                    ) {
+                                        Image(systemName: "plus")
+                                            .font(.system(size: 24, weight: .medium))
+                                            .foregroundStyle(.secondary)
+                                            .frame(width: 80, height: 80)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .strokeBorder(Color.secondary, style: StrokeStyle(lineWidth: 1, dash: [4]))
+                                            )
                                     }
                                 }
                             }
+                            
                         }
-                        
                         Spacer()
                     }
                     .padding()
                 }
                 .navigationTitle("New Report")
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { dismiss() }
+                        Button("Cancel") {
+                            viewStore.send(.dismissButtonTapped)
+                        }
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Save") {
                             onSave()
-                            dismiss()
+                            viewStore.send(.dismissButtonTapped)
                         }
                         .disabled(viewStore.state.title.isEmpty)
                     }
