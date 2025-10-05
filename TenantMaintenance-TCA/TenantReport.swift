@@ -8,19 +8,24 @@
 import ComposableArchitecture
 import _PhotosUI_SwiftUI
 
-
-struct TenantReport: Reducer {
-    struct State: Equatable {
+@Reducer
+struct TenantReport {
+    struct State: Equatable, Identifiable {
+        let id: UUID
         var title: String = ""
         var description: String = ""
         var selectedItems: [PhotosPickerItem] = []
         var photos: [UIImage] = []
+
+        init(id: UUID = UUID()) {
+            self.id = id
+        }
     }
     
     enum Action: Equatable {
         case titleChanged(String)
         case descriptionChanged(String)
-        case photoSelectionChanged([PhotosPickerItem])
+        case photosPickerSelectionChanged([PhotosPickerItem])
         case photosLoaded([UIImage])
     }
     
@@ -36,7 +41,7 @@ struct TenantReport: Reducer {
                 state.description = newDescription
                 return .none
 
-            case .photoSelectionChanged(let selection):
+            case .photosPickerSelectionChanged(let selection):
                 state.selectedItems = selection
                 return .run { [selection] send in
                     var images: [UIImage] = []

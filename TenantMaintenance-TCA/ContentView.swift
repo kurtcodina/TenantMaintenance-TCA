@@ -10,7 +10,14 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationStack {
-            MaintenanceView()
+            MaintenanceView(
+                store: .init(
+                    initialState: MaintenanceReports.State(),
+                    reducer: {
+                        MaintenanceReports()
+                    }
+                )
+            )
         }
     }
 }

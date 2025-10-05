@@ -6,18 +6,17 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct MaintenanceView: View {
-    
+    @Bindable var store: StoreOf<MaintenanceReports>
+
     let dateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "HH:mm - dd MMMM yyyy"
         return f
     }()
-    
-    @State private var showNewReportSheet = false
 
-    
     var body: some View {
         ScrollView {
             Text("Requests submitted for your Landord to review.")
@@ -27,14 +26,15 @@ struct MaintenanceView: View {
                 .padding(.horizontal)
             
             LazyVStack(spacing: 12) {
-                ForEach(1...12, id: \.self) { number in
+                ForEach(store.reports) { report in
                     VStack(alignment: .leading) {
-                        Text("Item \(number)")
+                        Text(report.title.isEmpty ? "Untitled" : report.title)
                             .font(.headline)
                         HStack {
-                            Text(dateFormatter.string(from: Date()))                                .font(.subheadline)
+                            Text(dateFormatter.string(from: Date()))
+                                .font(.subheadline)
                             Spacer()
-                            Text("Resolved")
+                            Text("Pending")
                         }
                     }
                     .padding()
@@ -44,8 +44,7 @@ struct MaintenanceView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        print("New tapped")
-                        showNewReportSheet = true
+                        store.send(.addReportButtonTapped)
                     } label: {
                         Label("New", systemImage: "plus")
                             .padding(.vertical, 6)
@@ -55,15 +54,10 @@ struct MaintenanceView: View {
                             .labelStyle(.titleAndIcon)
                     }
                     .buttonStyle(.plain)
-                    .sheet(isPresented: $showNewReportSheet) {
-                        NewReportView(
-                            store: .init(
-                                initialState: TenantReport.State(),
-                                reducer: {
-                                    TenantReport()._printChanges()
-                                }
-                            )
-                        )
+                    .sheet(item: $store.scope(state: \.newReport, action: \.newReport)) { newReportStore in
+                        NewReportView(store: newReportStore, onSave: {
+                            store.send(.saveReport)
+                        })
                     }
                 }
             }
@@ -72,5 +66,9 @@ struct MaintenanceView: View {
 }
 
 #Preview {
-    MaintenanceView()
+    MaintenanceView(
+        store: Store(initialState: MaintenanceReports.State()) {
+            MaintenanceReports()
+        }
+    )
 }
