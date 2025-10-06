@@ -15,8 +15,6 @@ struct NewReportView: View {
     let store: StoreOf<TenantReport>
     let onSave: () -> Void
     
-    private let suggestions = ["No Hot Water 💧", "Broken Oven 🔨", "Cracked Window 🪟", "Electrical ⚡️"]
-    
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
@@ -36,25 +34,9 @@ struct NewReportView: View {
                             )
                             .textFieldStyle(.roundedBorder)
                         }
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(suggestions, id: \.self) { suggestion in
-                                    Button(
-                                        action: {
-                                            viewStore.send(.titleChanged(suggestion))
-                                        }) {
-                                            Text(suggestion)
-                                                .padding(.horizontal, 12)
-                                                .padding(.vertical, 6)
-                                                .foregroundStyle(Color.accentColor)
-                                                .background(Color.accentColor.quinary)
-                                                .cornerRadius(16)
-                                        }
-                                }
-                            }
-                            .padding(.horizontal)
+                        SuggestionsScrollView { suggestion in
+                            viewStore.send(.titleChanged(suggestion))
                         }
-                        .padding(.horizontal, -16)
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Description (optional)")
@@ -91,14 +73,7 @@ struct NewReportView: View {
                                         maxSelectionCount: 6,
                                         matching: .images
                                     ) {
-                                        Image(systemName: "plus")
-                                            .font(.system(size: 24, weight: .medium))
-                                            .foregroundStyle(.secondary)
-                                            .frame(width: 80, height: 80)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .strokeBorder(Color.secondary, style: StrokeStyle(lineWidth: 1, dash: [4]))
-                                            )
+                                        AddPhotoSquareButton()
                                     }
                                 }
                             }
@@ -119,7 +94,7 @@ struct NewReportView: View {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Save") {
                             onSave()
-                            viewStore.send(.dismissButtonTapped)
+                            dismiss()
                         }
                         .disabled(viewStore.state.title.isEmpty)
                     }
