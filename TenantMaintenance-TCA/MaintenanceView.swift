@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct MaintenanceView: View {
-    @Bindable var store: StoreOf<MaintenanceReports>
+    @Bindable var store: StoreOf<AppFeature>
 
     let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -85,8 +85,8 @@ struct MaintenanceView: View {
 
 #Preview {
     MaintenanceView(
-        store: Store(initialState: MaintenanceReports.State()) {
-            MaintenanceReports()
+        store: Store(initialState: AppFeature.State()) {
+            AppFeature()
         }
     )
 }

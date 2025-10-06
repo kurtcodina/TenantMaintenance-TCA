@@ -117,7 +117,6 @@ struct ReportView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        // Flag action
                     } label: {
                         Image(systemName: "flag")
                     }

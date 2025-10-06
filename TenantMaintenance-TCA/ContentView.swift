@@ -12,9 +12,9 @@ struct ContentView: View {
         NavigationStack {
             MaintenanceView(
                 store: .init(
-                    initialState: MaintenanceReports.State(),
+                    initialState: AppFeature.State(),
                     reducer: {
-                        MaintenanceReports()
+                        AppFeature()
                     }
                 )
             )

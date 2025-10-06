@@ -8,7 +8,7 @@
 import ComposableArchitecture
 
 @Reducer
-struct MaintenanceReports {
+struct AppFeature {
     @ObservableState
     struct State: Equatable {
         var reports: IdentifiedArrayOf<TenantReport.State> = []
@@ -24,7 +24,7 @@ struct MaintenanceReports {
         case report(IdentifiedActionOf<TenantReport>)
     }
 
-    var body: some ReducerOf<MaintenanceReports> {
+    var body: some ReducerOf<AppFeature> {
         Reduce { state, action in
             switch action {
             case .addReportButtonTapped:
@@ -55,6 +55,5 @@ struct MaintenanceReports {
         .forEach(\.reports, action: \.report) {
             TenantReport()
         }
-    
     }
 }

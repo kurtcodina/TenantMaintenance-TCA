@@ -69,6 +69,7 @@ struct TenantReport {
                 print("resolved received")
                 state.status = .resolved
                 return .none
+                
             case .dismissButtonTapped:
                 return .run { _ in
                     await self.dismiss()

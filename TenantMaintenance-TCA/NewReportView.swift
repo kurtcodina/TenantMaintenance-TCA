@@ -22,11 +22,11 @@ struct NewReportView: View {
             NavigationStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text("Short title")
                                 .font(.headline)
                             TextField(
-                                "No hot water · Broken oven · Window stuck",
+                                "What needs maintenance?",
                                 text: viewStore.binding(
                                     get: \.title,
                                     send: {
@@ -35,11 +35,6 @@ struct NewReportView: View {
                                 )
                             )
                             .textFieldStyle(.roundedBorder)
-                            if viewStore.state.title.isEmpty {
-                                Text("Title cannot be empty")
-                                    .font(.footnote)
-                                    .foregroundColor(.red)
-                            }
                         }
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
@@ -51,14 +46,17 @@ struct NewReportView: View {
                                             Text(suggestion)
                                                 .padding(.horizontal, 12)
                                                 .padding(.vertical, 6)
-                                                .background(Color.gray.opacity(0.2))
+                                                .foregroundStyle(Color.accentColor)
+                                                .background(Color.accentColor.quinary)
                                                 .cornerRadius(16)
                                         }
                                 }
                             }
+                            .padding(.horizontal)
                         }
+                        .padding(.horizontal, -16)
                         
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text("Description (optional)")
                                 .font(.headline)
                             TextEditor(text: viewStore.binding(get: \.description, send: {
@@ -71,7 +69,7 @@ struct NewReportView: View {
                             )
                         }
                         
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text("Photos (optional)")
                                 .font(.headline)
                             
