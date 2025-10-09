@@ -6,11 +6,16 @@ This project is an experiment to better understand TCA’s core ideas and how th
 
 ---
 
-##Screenshots
+## Screenshots
+
+<img width="320" height="1278" alt="IMG_7003" src="https://github.com/user-attachments/assets/d4fb8b51-581d-4ad8-a6c5-211871337d48" />
+<img width="320" height="1278" alt="IMG_7004" src="https://github.com/user-attachments/assets/e6b2d6eb-8024-4594-99b2-b4e619d158d3" />
+<img width="320" height="1278" alt="IMG_7005" src="https://github.com/user-attachments/assets/cf906ff7-d5ae-4323-8652-34d0a38b0ad7" />
+
 
 ---
 
-##What I’ve Learned
+## What I’ve Learned
 
 TCA’s power comes from its **clarity and structure**. Some of the key concepts I’ve been exploring:
 
@@ -24,7 +29,7 @@ TCA’s power comes from its **clarity and structure**. Some of the key concepts
 
 ---
 
-##What I’m Building
+## What I’m Building
 
 I’m recreating **two key screens** from the August App marketing materials using TCA:
 1. **Maintenance Report List**
@@ -35,7 +40,7 @@ The focus is on modeling data flow clearly — not on full feature parity (yet).
 
 ---
 
-##Next Steps
+## Next Steps
 
 - Improve **Path Navigation** to handle deep linking and consistent state restoration.
 - Add **unit and integration tests** for reducers and effects.
@@ -44,14 +49,14 @@ The focus is on modeling data flow clearly — not on full feature parity (yet).
 
 ---
 
-##Reflection
+## Reflection
 
 TCA initially feels strict, but the more I build, the more I see its value — it forces a clear separation between logic and UI, and it makes features easier to reason about.  
 I’ll keep iterating and refining this project as I learn more about navigation, testing, and architecture patterns.
 
 ---
 
-##Tech Stack
+## Tech Stack
 
 - **SwiftUI**
 - **The Composable Architecture (TCA)**
