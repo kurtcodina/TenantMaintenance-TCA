@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct SuggestionsScrollView: View {
-    private let suggestions = ["No Hot Water 💧", "Broken Oven 🔨", "Cracked Window 🪟", "Electrical ⚡️"]
+    @Binding var title: String
     
-    let action: (String) -> Void
+    private let suggestions = ["No Hot Water 💧", "Broken Oven 🔨", "Cracked Window 🪟", "Electrical ⚡️"]
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -18,7 +18,7 @@ struct SuggestionsScrollView: View {
                 ForEach(suggestions, id: \.self) { suggestion in
                     Button(
                         action: {
-                            action(suggestion)
+                            title = suggestion
                         }) {
                             Text(suggestion)
                                 .padding(.horizontal, 12)

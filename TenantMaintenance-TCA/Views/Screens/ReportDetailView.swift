@@ -1,5 +1,5 @@
 //
-//  ReportView.swift
+//  ReportDetailView.swift
 //  TenantMaintenance-TCA
 //
 //  Created by codina on 10/5/25.
@@ -8,10 +8,9 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct ReportView: View {
-    @Environment(\.dismiss) private var dismiss
+struct ReportDetailView: View {
 
-    let store: StoreOf<TenantReport>
+    let store: StoreOf<ReportDetail>
 
     let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -20,27 +19,28 @@ struct ReportView: View {
     }()
 
     var body: some View {
+        EmptyView()
         WithViewStore(store, observe: { $0 }) { viewStore in
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
                         LabeledContent {
-                            Text(dateFormatter.string(from: viewStore.state.createdAt))
+                            Text(dateFormatter.string(from: viewStore.state.report.createdAt))
                                 .foregroundColor(.primary)
                         } label: {
                             Text("Creation date")
                                 .foregroundColor(.secondary)
                         }
                         LabeledContent {
-                                Text(viewStore.state.status.rawValue)
-                                    .foregroundColor(viewStore.state.status.color)
+                            Text(viewStore.state.report.status.rawValue)
+                                .foregroundColor(viewStore.state.report.status.color)
                         } label: {
                             Text("Status")
                                 .foregroundColor(.secondary)
                         }
                         .onTapGesture {
                             print("tapped resolved")
-                            viewStore.send(.resolved)
+                            viewStore.send(.statusTapped)
                         }
                     }
                     .padding()
@@ -50,7 +50,7 @@ struct ReportView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Title")
                             .font(.headline)
-                        Text(viewStore.state.title)
+                        Text(viewStore.state.report.title)
                             .font(.body)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
@@ -59,43 +59,8 @@ struct ReportView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                    if !viewStore.state.description.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Description")
-                                .font(.headline)
-                            Text(viewStore.state.description)
-                                .font(.body)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding()
-                                .background(Color(UIColor.secondarySystemGroupedBackground))
-                                .cornerRadius(10)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-
-                    if !viewStore.state.photos.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Photos")
-                                .font(.headline)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack {
-                                    ForEach(viewStore.state.photos, id: \.self) { img in
-                                        Image(uiImage: img)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 80, height: 80)
-                                            .clipped()
-                                            .cornerRadius(8)
-                                    }
-                                }
-                                .padding()
-                            }
-                            .background(Color(UIColor.secondarySystemGroupedBackground))
-                            .cornerRadius(10)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    ReportDetailDescriptionView(report: viewStore.report)
+                    ReportDetailPhotosView(report:viewStore.report)
 
                     Spacer()
                 }
@@ -110,13 +75,14 @@ struct ReportView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        dismiss()
+                        store.send(.backTapped)
                     } label: {
                         Image(systemName: "arrow.left")
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
+                        
                     } label: {
                         Image(systemName: "flag")
                     }
@@ -125,15 +91,4 @@ struct ReportView: View {
         }
         
     }
-}
-
-#Preview {
-    ReportView(
-        store: .init(
-            initialState: TenantReport.State(),
-            reducer: {
-                TenantReport()
-            }
-        )
-    )
 }

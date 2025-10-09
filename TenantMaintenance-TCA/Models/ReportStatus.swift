@@ -1,5 +1,5 @@
 //
-//  TenantReportStatus.swift
+//  ReportStatus.swift
 //  TenantMaintenance-TCA
 //
 //  Created by codina on 10/6/25.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-enum TenantReportStatus: String, CaseIterable {
+enum ReportStatus: String, CaseIterable {
     case open = "Open"
     case resolved = "Resolved"
 
